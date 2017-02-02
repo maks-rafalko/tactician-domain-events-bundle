@@ -1,0 +1,28 @@
+language: php
+
+sudo: false
+
+php:
+  - 5.6
+  - 7.0
+  - 7.1
+  - hhvm
+
+cache:
+  directories:
+  - $HOME/.composer/cache
+
+before_install:
+  - composer selfupdate
+
+install:
+  - composer install
+
+before_script:
+  - mkdir -p build/logs
+
+script:
+  - vendor/bin/phpunit --coverage-clover=clover.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

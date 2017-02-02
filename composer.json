@@ -1,0 +1,37 @@
+{
+    "name": "bornfreee/tactician-domain-events-bundle",
+    "description": "Bundle to integrate Tactician Domain Events library with Symfony project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maks Rafalko",
+            "email": "maks.rafalko@gmail.com",
+            "role": "Author"
+        }
+    ],
+    "keywords" : [
+        "tactician domain events",
+        "bundle",
+        "symfony"
+    ],
+    "autoload": {
+        "psr-4": {
+            "BornFree\\TacticianDomainEventBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BornFree\\TacticianDomainEventBundle\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "require": {
+        "php": ">=5.4",
+        "symfony/config": "^2.8|^3.0",
+        "symfony/http-kernel": "^2.8|^3.0",
+        "symfony/dependency-injection": "^2.8|^3.0",
+        "bornfree/tactician-doctrine-domain-events": "^0.3"
+    }
+}
