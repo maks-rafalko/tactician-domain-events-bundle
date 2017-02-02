@@ -10,7 +10,9 @@
         }
     ],
     "keywords" : [
-        "tactician domain events",
+        "tactician",
+        "domain",
+        "events",
         "bundle",
         "symfony"
     ],
@@ -33,5 +35,6 @@
         "symfony/http-kernel": "^2.8|^3.0",
         "symfony/dependency-injection": "^2.8|^3.0",
         "bornfree/tactician-doctrine-domain-events": "^0.3"
-    }
+    },
+    "minimum-stability": "stable"
 }
