@@ -72,7 +72,7 @@ We only want to handle the events themselves <em>after</em> the command has comp
 <pre><code class="language-yaml">app.listener.send_email:
     class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
     tags:
-        - { name: tactician.event_listener, event: AppBundle\Controller\UserWasCreated }</code></pre>
+        - { name: tactician.event_listener, event: App\Domain\Events\UserWasCreated }</code></pre>
 <p>Notice the tag <code>tactician.event_listener</code>. The bundle automatically finds all services tagged with this tag and adds the listener to <code>EventDispatcher</code>.</p>
 <p>This is all configuration you need to start using the Tactician command bus with Domain Events.</p>
 <p>Let's have an example where we create a new user and a <code>UserWasCreated</code> domain event is dispatched:</p>
