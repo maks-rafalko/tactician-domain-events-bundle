@@ -1,8 +1,8 @@
 services:
     tactician_domain_events.doctrine.event_collector:
         class: BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromEntities
-            tags:
-                - { name: doctrine.event_subscriber, connection: default }
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
 
     tactician_domain_events.dispatcher:
         class: BornFree\TacticianDomainEvent\EventDispatcher\EventDispatcher

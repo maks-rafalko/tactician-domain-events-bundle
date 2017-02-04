@@ -2,12 +2,14 @@
 
 namespace BornFree\TacticianDomainEventBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
-class TacticianDomainEventExtension extends Extension
+class TacticianDomainEventExtension extends Extension implements CompilerPassInterface
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -15,8 +17,36 @@ class TacticianDomainEventExtension extends Extension
         $loader->load('services.yml');
     }
 
-//    public function getAlias()
-//    {
-//        return 'tactician';
-//    }
+    public function process(ContainerBuilder $container)
+    {
+        if (!$container->hasDefinition('tactician_domain_events.dispatcher')) {
+            return;
+        }
+
+        $definition = $container->getDefinition('tactician_domain_events.dispatcher');
+        $taggedServices = $container->findTaggedServiceIds('tactician.event_listener');
+
+        foreach ($taggedServices as $id => $tags) {
+            foreach ($tags as $attributes) {
+                if (!isset($attributes['event'])) {
+                    throw new \Exception('The tactician.event_listener tag must always have an event attribute');
+                }
+
+                if (!class_exists($attributes['event'])) {
+                    throw new \Exception(
+                        sprintf(
+                            'Class %s registered as an event class in %s does not exist',
+                            $attributes['event'],
+                            $id
+                        )
+                    );
+                }
+
+                $definition->addMethodCall('addListener', [
+                    $attributes['event'],
+                    new Reference($id)
+                ]);
+            }
+        }
+    }
 }
