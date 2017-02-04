@@ -8,7 +8,7 @@ Installation
 
 Install via composer
 
-```
+```bash
 composer require bornfreee/tactician-domain-events-bundle
 ```
 
@@ -29,7 +29,7 @@ We only want to handle the events themselves *after* the command has completely 
 
 It means that as soon as transaction is completed, the Domain Events will be recorded:
 
-```php
+```yaml
 tactician:
     commandbus:
         default:
@@ -44,7 +44,7 @@ tactician:
 
 In order to add event listeners for dispatched Domain Events, we need to define services and the corresponded commands for them:
 
-```php
+```yaml
 app.listener.send_email:
     class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
     tags:
