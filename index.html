@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title></title>
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/highlight.dark.css">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="/">
+                The title
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container">
+            <div class="row">
+
+                
+                <section id="content" class="col-sm-12">
+                    <h1 id="tactician-domain-events-symfony-bundle">Tactician Domain Events Symfony Bundle</h1>
+<p>Symfony Bundle to integrate <a href="https://bornfreee.github.io/tactician-domain-events/">Tactician Domain Events library</a> with Symfony project</p>
+<h2 id="installation">Installation</h2>
+<p>Install via composer</p>
+<pre><code>composer require bornfreee/tactician-domain-events-bundle</code></pre>
+<h2 id="usage">Usage</h2>
+<p>This bundle allows you to automatically have Domain Events dispatched by <code>EventDispatcher</code>. It also allows to register event listeners as the Symfony Services.
+You can register as many listeners as you want for each Domain Event.</p>
+<p>First, we need to install the Tactician official Bundle to integrate the command bus library:</p>
+<pre><code class="language-php">composer require league/tactician-bundle</code></pre>
+<p>Then we need to configure Middleware to automatically record the Domain Events and dispatch them.
+We only want to handle the events themselves <em>after</em> the command has completely and successfully been handled. So we add the middleware that records the Domain Events <em>before</em> the Transaction middleware.</p>
+<p>It means that as soon as transaction is completed, the Domain Events will be recorded:</p>
+<pre><code class="language-php">tactician:
+    commandbus:
+        default:
+            middleware:
+                # other middlewares...
+                - tactician_domain_events.middleware.release_recorded_events # make sure to add it before `tactician.middleware.doctrine` 
+                - tactician.middleware.doctrine
+                - tactician.middleware.command_handler</code></pre>
+<h3 id="configuring-event-listeners">Configuring Event Listeners</h3>
+<p>In order to add event listeners for dispatched Domain Events, we need to define services and the corresponded commands for them:</p>
+<pre><code class="language-php">app.listener.send_email:
+    class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
+    tags:
+        - { name: tactician.event_listener, event: AppBundle\Controller\UserWasCreated }</code></pre>
+<p>Notice the tag <code>tactician.event_listener</code>. The bundle automatically finds all services tagged with this tag and adds the listener to <code>EventDispatcher</code>.</p>
+<p>This is all configuration you need to start using the Tactician command bus with Domain Events.</p>
+<p>Let's have an example where we create a new user and a <code>UserWasCreated</code> domain event is dispatched:</p>
+<pre><code class="language-php">class User implements ContainsRecordedEvents
+{
+    use EventRecorderCapabilities;
+
+    public function __construct($name)
+    {
+        $this-&gt;name = $name;
+
+        $this-&gt;record(new UserWasCreated($name));
+    }
+
+    // ...
+}</code></pre>
+<p>As soon as this <code>Entity</code> is successfully created, the <code>SendEmailAfterUserIsCreatedListener</code> will be dispatched.</p>
+<h2 id="license">License</h2>
+<p>Copyright (c) 2017, Maks Rafalko</p>
+<p>Under MIT license, read LICENSE file.</p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
