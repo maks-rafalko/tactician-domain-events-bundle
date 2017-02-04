@@ -48,7 +48,7 @@ In order to add event listeners for dispatched Domain Events, we need to define 
 app.listener.send_email:
     class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
     tags:
-        - { name: tactician.event_listener, event: AppBundle\Controller\UserWasCreated }
+        - { name: tactician.event_listener, event: App\Domain\Events\UserWasCreated }
 ```
 
 Notice the tag `tactician.event_listener`. The bundle automatically finds all services tagged with this tag and adds the listener to `EventDispatcher`.
