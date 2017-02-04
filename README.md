@@ -1,4 +1,4 @@
-[WIP] Tactician Domain Events Symfony Bundle
+Tactician Domain Events Symfony Bundle
 ======================================
 
 Symfony Bundle to integrate Tactician Domain Events library with Symfony project
