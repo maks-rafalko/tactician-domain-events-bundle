@@ -6,7 +6,7 @@ baseUrl: https://bornfreee.github.io/tactician-domain-events-bundle
 
 github:
     user: borNfreee
-    repo: tactician-domain-events
+    repo: tactician-domain-events-bundle
 
 menu:
     items:
