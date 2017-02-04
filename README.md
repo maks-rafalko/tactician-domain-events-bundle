@@ -73,7 +73,7 @@ class User implements ContainsRecordedEvents
 }
 ```
 
-As soon as this `Entity` is successfully created, the `SendEmailAfterUserIsCreatedListener` will be dispatched.
+As soon as this `Entity` is successfully created, the `SendEmailAfterUserIsCreatedListener` will be triggered.
 
 License
 -------
