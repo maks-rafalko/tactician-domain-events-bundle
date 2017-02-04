@@ -13,4 +13,4 @@ menu:
         domain_events:
             itemId: domain_events
             text: Domain events
-            absuluteUrl: https://bornfreee.github.io/tactician-domain-events
+            absoluteUrl: https://bornfreee.github.io/tactician-domain-events
