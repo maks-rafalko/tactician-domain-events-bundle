@@ -3,7 +3,7 @@ Tactician Domain Events Symfony Bundle
 
 [![Build Status](https://travis-ci.org/borNfreee/tactician-domain-events-bundle.svg?branch=master)](https://travis-ci.org/borNfreee/tactician-domain-events-bundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/borNfreee/tactician-domain-events-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/borNfreee/tactician-domain-events-bundle/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/bornfree/tactician-domain-events-bundle/v/stable)](https://packagist.org/packages/bornfree/tactician-domain-events-bundle)
+[![Latest Stable Version](https://poser.pugx.org/bornfreee/tactician-domain-events-bundle/v/stable)](https://packagist.org/packages/bornfreee/tactician-domain-events-bundle)
 
 Symfony Bundle to integrate [Tactician Domain Events library](https://bornfreee.github.io/tactician-domain-events/) with Symfony project
 
