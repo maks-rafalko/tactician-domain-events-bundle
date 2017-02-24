@@ -34,7 +34,7 @@
         "symfony/config": "^2.8|^3.0",
         "symfony/http-kernel": "^2.8|^3.0",
         "symfony/dependency-injection": "^2.8|^3.0",
-        "bornfree/tactician-doctrine-domain-events": "^0.3"
+        "bornfree/tactician-doctrine-domain-events": "^0.3.3"
     },
     "minimum-stability": "stable"
 }
