@@ -23,6 +23,12 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
             return;
         }
 
+        $this->addListeners($container);
+        $this->addSubscribers($container);
+    }
+
+    private function addListeners(ContainerBuilder $container)
+    {
         $definition = $container->getDefinition('tactician_domain_events.dispatcher');
         $taggedServices = $container->findTaggedServiceIds('tactician.event_listener');
 
@@ -47,6 +53,18 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
                     new Reference($id)
                 ]);
             }
+        }
+    }
+
+    private function addSubscribers(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition('tactician_domain_events.dispatcher');
+        $taggedServices = $container->findTaggedServiceIds('tactician.event_subscriber');
+
+        foreach ($taggedServices as $id => $tags) {
+            $definition->addMethodCall('addSubscriber', [
+                new Reference($id)
+            ]);
         }
     }
 }
