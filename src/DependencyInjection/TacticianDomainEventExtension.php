@@ -48,9 +48,13 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
                     );
                 }
 
+                $listener = array_key_exists('method', $attributes)
+                    ? [new Reference($id), $attributes['method']]
+                    : new Reference($id);
+
                 $definition->addMethodCall('addListener', [
                     $attributes['event'],
-                    new Reference($id)
+                    $listener
                 ]);
             }
         }
