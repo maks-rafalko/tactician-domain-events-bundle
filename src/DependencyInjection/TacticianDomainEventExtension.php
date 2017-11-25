@@ -2,7 +2,6 @@
 
 namespace BornFree\TacticianDomainEventBundle\DependencyInjection;
 
-use BornFree\TacticianDoctrineDomainEvent\Tests\EventListener\CollectsEventsFromAllEntitiesManagedByUnitOfWorkTest;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
