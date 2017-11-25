@@ -2,6 +2,8 @@
 
 namespace BornFree\TacticianDomainEventBundle\DependencyInjection;
 
+use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromAllEntitiesManagedByUnitOfWork;
+use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromEntities;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -20,7 +22,7 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        $this->registerEventCollector($container, $config['use_identity_map']);
+        $this->registerEventCollector($container, $config['collect_from_all_managed_entities']);
     }
 
     public function process(ContainerBuilder $container)
@@ -78,11 +80,11 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
         }
     }
 
-    private function registerEventCollector(ContainerBuilder $container, $useIdentityMap)
+    private function registerEventCollector(ContainerBuilder $container, $collectFromAllManagedEntities)
     {
-        $class = 'BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromEntities';
-        if ($useIdentityMap === true) {
-            $class = 'BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromAllEntitiesManagedByUnitOfWork';
+        $class = CollectsEventsFromEntities::class;
+        if ($collectFromAllManagedEntities) {
+            $class = CollectsEventsFromAllEntitiesManagedByUnitOfWork::class;
         }
 
         $eventCollector = new Definition($class);

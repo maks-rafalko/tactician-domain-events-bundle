@@ -14,7 +14,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->booleanNode('use_identity_map')
+                ->booleanNode('collect_from_all_managed_entities')
                     ->defaultFalse()
                 ->end()
             ->end()
