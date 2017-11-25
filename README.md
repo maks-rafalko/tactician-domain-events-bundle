@@ -79,6 +79,10 @@ class User implements ContainsRecordedEvents
 
 As soon as this `Entity` is successfully created, the `SendEmailAfterUserIsCreatedListener` will be triggered.
 
+### Debugging
+
+You can run the `debug:tactician-domain-events` command to get a list of all events with mapped listeners.
+
 License
 -------
 
