@@ -16,7 +16,6 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->booleanNode('use_identity_map')
                     ->defaultFalse()
-                    ->cannotBeEmpty()
                 ->end()
             ->end()
         ;
