@@ -30,11 +30,11 @@
         "phpunit/phpunit": "^5.7"
     },
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "symfony/config": "^2.8|^3.0",
         "symfony/http-kernel": "^2.8|^3.0",
         "symfony/dependency-injection": "^2.8|^3.0",
-        "bornfree/tactician-doctrine-domain-events": "^0.3.3"
+        "bornfree/tactician-doctrine-domain-events": "^0.4.0"
     },
     "minimum-stability": "stable"
 }

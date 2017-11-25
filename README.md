@@ -16,6 +16,18 @@ Install via composer
 composer require bornfreee/tactician-domain-events-bundle
 ```
 
+Configuration
+-----
+
+On default event collector `CollectsEventsFromEntities` will be used, but sometimes you might record an event when entity doesn't change so the event is not collected.
+It's also true when an aggregate root is recording events for its child entities. To collect those events you need to use `CollectsEventsFromAllEntitiesManagedByUnitOfWork`
+That one collects events from all entities which are managed by Unit of Work. To use it you need to set `collect_from_all_managed_entities` on true:
+
+```yaml
+tactician_domain_event:
+    collect_from_all_managed_entities: true # it's false on default
+```
+
 Usage
 -----
 

@@ -2,6 +2,9 @@
 
 namespace BornFree\TacticianDomainEventBundle\DependencyInjection;
 
+use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromAllEntitiesManagedByUnitOfWork;
+use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromEntities;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,6 +18,11 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $this->registerEventCollector($container, $config['collect_from_all_managed_entities']);
     }
 
     public function process(ContainerBuilder $container)
@@ -70,5 +78,18 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
                 new Reference($id)
             ]);
         }
+    }
+
+    private function registerEventCollector(ContainerBuilder $container, $collectFromAllManagedEntities)
+    {
+        $class = CollectsEventsFromEntities::class;
+        if ($collectFromAllManagedEntities) {
+            $class = CollectsEventsFromAllEntitiesManagedByUnitOfWork::class;
+        }
+
+        $eventCollector = new Definition($class);
+        $eventCollector->addTag('doctrine.event_subscriber', ['connection' => 'default']);
+
+        $container->setDefinition('tactician_domain_events.doctrine.event_collector', $eventCollector);
     }
 }
