@@ -23,7 +23,9 @@ class PopulateDebugCommandPass implements CompilerPassInterface
         foreach ($listeners as $serviceId => $tags) {
             foreach ($tags as $tag) {
                 $listener = $container->getDefinition($serviceId);
-                $events[$tag['event']][] = $listener->getClass().'::'.$tag['method'];
+                $method = array_key_exists('method', $tag) ? $tag['method'] : '__invoke';
+
+                $events[$tag['event']][] = $listener->getClass() . '::' . $method;
             }
         }
 
@@ -35,7 +37,7 @@ class PopulateDebugCommandPass implements CompilerPassInterface
             }
 
             foreach ($subscriber->getSubscribedEvents() as $event => $method) {
-                $events[$event][] = get_class($subscriber).'::'.$method;
+                $events[$event][] = get_class($subscriber) . '::' . $method[1];
             }
         }
 

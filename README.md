@@ -16,6 +16,15 @@ Install via composer
 composer require bornfreee/tactician-domain-events-bundle
 ```
 
+Add bundle to `AppKernel.php`:
+
+```php
+$bundles = [
+    // ...
+    new \BornFree\TacticianDomainEventBundle\TacticianDomainEventBundle(),
+];
+```
+
 Configuration
 -----
 
@@ -31,7 +40,7 @@ tactician_domain_event:
 Usage
 -----
 
-This bundle allows you to automatically have Domain Events dispatched by `EventDispatcher`. It also allows to register event listeners as the Symfony Services.
+This bundle allows you to automatically have Domain Events dispatched by `EventDispatcher`. It also allows to register event listeners and subscribers as the Symfony Services.
 You can register as many listeners as you want for each Domain Event.
 
 First, we need to install the Tactician official Bundle to integrate the command bus library:
@@ -68,6 +77,15 @@ app.listener.send_email:
 ```
 
 Notice the tag `tactician.event_listener`. The bundle automatically finds all services tagged with this tag and adds the listener to `EventDispatcher`.
+
+By default, event listener shold have public `__invoke` function. If you want to have regular method name, it's possible to it to the service configuration:
+
+```yaml
+app.listener.send_email:
+    class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
+    tags:
+        - { name: tactician.event_listener, event: App\Domain\Events\UserWasCreated, method: send }
+```
 
 This is all configuration you need to start using the Tactician command bus with Domain Events.
 
