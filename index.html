@@ -47,12 +47,26 @@
                 
                 <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
                     <h1 id="tactician-domain-events-symfony-bundle">Tactician Domain Events Symfony Bundle</h1>
+<p><a href="https://travis-ci.org/borNfreee/tactician-domain-events-bundle"><img src="https://travis-ci.org/borNfreee/tactician-domain-events-bundle.svg?branch=master" alt="Build Status" /></a>
+<a href="https://scrutinizer-ci.com/g/borNfreee/tactician-domain-events-bundle/?branch=master"><img src="https://scrutinizer-ci.com/g/borNfreee/tactician-domain-events-bundle/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality" /></a>
+<a href="https://packagist.org/packages/bornfreee/tactician-domain-events-bundle"><img src="https://poser.pugx.org/bornfreee/tactician-domain-events-bundle/v/stable" alt="Latest Stable Version" /></a></p>
 <p>Symfony Bundle to integrate <a href="https://bornfreee.github.io/tactician-domain-events/">Tactician Domain Events library</a> with Symfony project</p>
 <h2 id="installation">Installation</h2>
 <p>Install via composer</p>
 <pre><code class="language-bash">composer require bornfreee/tactician-domain-events-bundle</code></pre>
+<p>Add bundle to <code>AppKernel.php</code>:</p>
+<pre><code class="language-php">$bundles = [
+    // ...
+    new \BornFree\TacticianDomainEventBundle\TacticianDomainEventBundle(),
+];</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>On default event collector <code>CollectsEventsFromEntities</code> will be used, but sometimes you might record an event when entity doesn't change so the event is not collected.
+It's also true when an aggregate root is recording events for its child entities. To collect those events you need to use <code>CollectsEventsFromAllEntitiesManagedByUnitOfWork</code>
+That one collects events from all entities which are managed by Unit of Work. To use it you need to set <code>collect_from_all_managed_entities</code> on true:</p>
+<pre><code class="language-yaml">tactician_domain_event:
+    collect_from_all_managed_entities: true # it's false on default</code></pre>
 <h2 id="usage">Usage</h2>
-<p>This bundle allows you to automatically have Domain Events dispatched by <code>EventDispatcher</code>. It also allows to register event listeners as the Symfony Services.
+<p>This bundle allows you to automatically have Domain Events dispatched by <code>EventDispatcher</code>. It also allows to register event listeners and subscribers as the Symfony Services.
 You can register as many listeners as you want for each Domain Event.</p>
 <p>First, we need to install the Tactician official Bundle to integrate the command bus library:</p>
 <pre><code class="language-php">composer require league/tactician-bundle</code></pre>
@@ -74,6 +88,11 @@ We only want to handle the events themselves <em>after</em> the command has comp
     tags:
         - { name: tactician.event_listener, event: App\Domain\Events\UserWasCreated }</code></pre>
 <p>Notice the tag <code>tactician.event_listener</code>. The bundle automatically finds all services tagged with this tag and adds the listener to <code>EventDispatcher</code>.</p>
+<p>By default, event listener shold have public <code>__invoke</code> function. If you want to have regular method name, it's possible to it to the service configuration:</p>
+<pre><code class="language-yaml">app.listener.send_email:
+    class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
+    tags:
+        - { name: tactician.event_listener, event: App\Domain\Events\UserWasCreated, method: send }</code></pre>
 <p>This is all configuration you need to start using the Tactician command bus with Domain Events.</p>
 <p>Let's have an example where we create a new user and a <code>UserWasCreated</code> domain event is dispatched:</p>
 <pre><code class="language-php">class User implements ContainsRecordedEvents
@@ -90,6 +109,8 @@ We only want to handle the events themselves <em>after</em> the command has comp
     // ...
 }</code></pre>
 <p>As soon as this <code>Entity</code> is successfully created, the <code>SendEmailAfterUserIsCreatedListener</code> will be triggered.</p>
+<h3 id="debugging">Debugging</h3>
+<p>You can run the <code>debug:tactician-domain-events</code> command to get a list of all events with mapped listeners.</p>
 <h2 id="license">License</h2>
 <p>Copyright (c) 2017, Maks Rafalko</p>
 <p>Under MIT license, read LICENSE file.</p>
