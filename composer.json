@@ -31,9 +31,9 @@
     },
     "require": {
         "php": ">=5.5",
-        "symfony/config": "^2.8|^3.0",
-        "symfony/http-kernel": "^2.8|^3.0",
-        "symfony/dependency-injection": "^2.8|^3.0",
+        "symfony/config": "^2.8|^4.0",
+        "symfony/http-kernel": "^2.8|^4.0",
+        "symfony/dependency-injection": "^2.8|^4.0",
         "bornfree/tactician-doctrine-domain-events": "^0.4.0"
     },
     "minimum-stability": "stable"
