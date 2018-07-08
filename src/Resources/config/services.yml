@@ -2,7 +2,7 @@ services:
     tactician_domain_events.dispatcher:
         class: BornFree\TacticianDomainEvent\EventDispatcher\EventDispatcher
         lazy: true
-        
+
     tactician_domain_events.middleware.release_recorded_events:
         class: BornFree\TacticianDomainEvent\Middleware\ReleaseRecordedEventsMiddleware
         arguments: ['@tactician_domain_events.doctrine.event_collector', '@tactician_domain_events.dispatcher']
@@ -10,5 +10,7 @@ services:
 
     tactician_domain_events.command.debug:
         class: BornFree\TacticianDomainEventBundle\Command\DebugCommand
+        arguments:
+            - '@service_container'
         tags:
             - { name: console.command }
