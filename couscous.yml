@@ -2,10 +2,10 @@ title: Tactician Domain Events Bundle
 
 subTitle: Symfony Bundle to integrate Tactician Domain Events library with Symfony project
 
-baseUrl: https://bornfreee.github.io/tactician-domain-events-bundle
+baseUrl: https://maks-rafalko.github.io/tactician-domain-events-bundle
 
 github:
-    user: borNfreee
+    user: maks-rafalko
     repo: tactician-domain-events-bundle
 
 menu:
@@ -13,4 +13,4 @@ menu:
         domain_events:
             itemId: domain_events
             text: Domain events
-            absoluteUrl: https://bornfreee.github.io/tactician-domain-events
+            absoluteUrl: https://maks-rafalko.github.io/tactician-domain-events
