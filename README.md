@@ -106,9 +106,43 @@ class User implements ContainsRecordedEvents
     // ...
 }
 ```
-
 As soon as this `Entity` is successfully created, the `SendEmailAfterUserIsCreatedListener` will be triggered.
 
+### Map Based On Typehints
+Rather than repeating the command's full class name, we can also reflect on the Handler's method typehints.
+
+```yaml
+app.listener.send_email:
+    class: AppBundle\EventListener\SendEmailAfterUserIsCreatedListener
+    tags:
+        - { name: tactician.event_listener, typhints: true }
+```
+
+This detects what commands this handler receives by inspecting the class' methods. The rules for matching are:
+
+1. The method must be public.
+2. The method must accept only one parameter.
+3. The parameter must be typehinted with a class name.
+
+If you have multiple commands going into a single handler, they will all be detected, provided they follow the rules above. The actual name of the method is NOT important.
+
+In other words, the SendEmailAfterUserIsCreatedListener class should look like this:
+
+```php
+<?php
+class SendEmailAfterUserIsCreatedListener
+{
+    public function handleRegisterUser(RegisterUser $command)
+    {
+       // do stuff
+    }
+    
+    public function handleUserWasCreated(UserWasCreated $command)
+    {
+       // do stuff
+    }
+}
+```
 ### Debugging
 
 You can run the `debug:tactician-domain-events` command to get a list of all events with mapped listeners.

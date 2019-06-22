@@ -7,8 +7,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use ReflectionClass;
 
 class DebugCommand extends Command
 {
@@ -28,7 +28,36 @@ class DebugCommand extends Command
                 $listener = $container->get($serviceId);
                 $method = array_key_exists('method', $tag) ? $tag['method'] : '__invoke';
 
-                $events[$tag['event']][] = get_class($listener) . '::' . $method;
+                if (isset($tag['event'])) {
+                    $events[$tag['event']][] = get_class($listener) . '::' . $method;                    
+                }
+
+                if (isset($tag['typehints'])) {
+                    $reflClass = new ReflectionClass($container->getParameterBag()->resolveValue($listener));
+
+                    foreach ($reflClass->getMethods() as $method) {
+                        if (!$method->isPublic()
+                            || $method->isConstructor()
+                            || $method->isStatic()
+                            || $method->isAbstract()
+                            || $method->isVariadic()
+                            || $method->getNumberOfParameters() !== 1
+                        ) {
+                            continue;
+                        }
+                        $parameter = $method->getParameters()[0];
+                        if (!$parameter->hasType()
+                            || $parameter->getType()->isBuiltin()
+                            || $parameter->getClass()->isInterface()
+                        ) {
+                            continue;
+                        }
+
+                        $event = (string)$parameter->getType();
+
+                        $events[$event][] = get_class($listener) . '::' . $method->getName();                    
+                    }
+                }
             }
         }
 

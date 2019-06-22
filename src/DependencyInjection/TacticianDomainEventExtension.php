@@ -2,6 +2,7 @@
 
 namespace BornFree\TacticianDomainEventBundle\DependencyInjection;
 
+use ReflectionClass;
 use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromAllEntitiesManagedByUnitOfWork;
 use BornFree\TacticianDoctrineDomainEvent\EventListener\CollectsEventsFromEntities;
 use Symfony\Component\DependencyInjection\Definition;
@@ -40,32 +41,97 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
         $definition = $container->getDefinition('tactician_domain_events.dispatcher');
         $taggedServices = $container->findTaggedServiceIds('tactician.event_listener');
 
+        $listeners = array_merge(
+            $this->findListenersForEvent($taggedServices),
+            $this->findListenersForTypeHints($container, $taggedServices)
+        );
+
+        foreach($listeners as $item) {
+            if (!class_exists($item['event'])) {
+                throw new \Exception(
+                    sprintf(
+                        'Class "%s" registered as an event class in "%s" does not exist',
+                        $item['event'],
+                        $item['id']
+                    )
+                );
+            }
+
+            $listener = $item['method']
+                ? [new Reference($item['id']), $item['method']]
+                : new Reference($item['id']);
+
+            $definition->addMethodCall('addListener', [
+                $item['event'],
+                $listener
+            ]);
+
+        }
+    }
+
+    private function findListenersForEvent($taggedServices): array
+    {
+        $listeners = [];
+
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['event'])) {
-                    throw new \Exception('The tactician.event_listener tag must always have an event attribute');
+                    continue;
                 }
 
-                if (!class_exists($attributes['event'])) {
-                    throw new \Exception(
-                        sprintf(
-                            'Class %s registered as an event class in %s does not exist',
-                            $attributes['event'],
-                            $id
-                        )
-                    );
-                }
-
-                $listener = array_key_exists('method', $attributes)
-                    ? [new Reference($id), $attributes['method']]
-                    : new Reference($id);
-
-                $definition->addMethodCall('addListener', [
-                    $attributes['event'],
-                    $listener
-                ]);
+                $listeners[] = [
+                    'id'     => $id,
+                    'event'  => $attributes['event'],
+                    'method' => $attributes['method'] ?? null
+                ];               
             }
         }
+
+        return $listeners;
+    }
+
+    private function findListenersForTypeHints(ContainerBuilder $container, $taggedServices): array
+    {
+        $listeners = [];
+
+        foreach ($taggedServices as $id => $tags) {
+            foreach ($tags as $attributes) {
+                if (!isset($attributes['typehints']) || $attributes['typehints'] !== true) {
+                    continue;
+                }
+
+                $reflClass = new ReflectionClass($container->getParameterBag()->resolveValue($container->getDefinition($id)->getClass()));
+
+                foreach ($reflClass->getMethods() as $method) {
+                    if (!$method->isPublic()
+                        || $method->isConstructor()
+                        || $method->isStatic()
+                        || $method->isAbstract()
+                        || $method->isVariadic()
+                        || $method->getNumberOfParameters() !== 1
+                    ) {
+                        continue;
+                    }
+                    $parameter = $method->getParameters()[0];
+                    if (!$parameter->hasType()
+                        || $parameter->getType()->isBuiltin()
+                        || $parameter->getClass()->isInterface()
+                    ) {
+                        continue;
+                    }
+
+                    $event = (string)$parameter->getType();
+
+                    $listeners[] = [
+                        'id'     => $id,
+                        'event'  => $event,
+                        'method' => $method->getName()
+                    ];               
+                }
+            }
+        }
+
+        return $listeners;
     }
 
     private function addSubscribers(ContainerBuilder $container)
