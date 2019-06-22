@@ -50,7 +50,7 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
             if (!class_exists($item['event'])) {
                 throw new \Exception(
                     sprintf(
-                        'Class %s registered as an event class in %s does not exist',
+                        'Class "%s" registered as an event class in "%s" does not exist',
                         $item['event'],
                         $item['id']
                     )
@@ -113,7 +113,6 @@ class TacticianDomainEventExtension extends Extension implements CompilerPassInt
                         continue;
                     }
                     $parameter = $method->getParameters()[0];
-                    // dump($parameter);
                     if (!$parameter->hasType()
                         || $parameter->getType()->isBuiltin()
                         || $parameter->getClass()->isInterface()
